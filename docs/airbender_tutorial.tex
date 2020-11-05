@@ -2,6 +2,10 @@
 \usepackage[croatian]{babel}
 \usepackage{hyperref}
 
+% visual
+\setlength{\parindent}{0em}
+\setlength{\parskip}{.5em}
+
 % tables
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -18,6 +22,7 @@
 %% font stranica
 \renewcommand{\cftsecpagefont}{\sc}
 \renewcommand{\cftsubsecpagefont}{\sc}
+\renewcommand{\cftsubsubsecpagefont}{\sc}
 %% imena poglavlja
 \renewcommand{\cftsecfont}{\sc}
 \renewcommand{\cftsubsecfont}{\sc}
@@ -40,6 +45,7 @@
 \usepackage{titlesec}
 \titleformat*{\section}{\Large\sc}
 \titleformat*{\subsection}{\large\sc}
+\titleformat*{\subsubsection}{\large\sc}
 
 \begin{document}
 
@@ -66,13 +72,18 @@ VARA\v{Z}DIN
 \end{center}
 
 \pagebreak
+\phantom{}
+\pagebreak
 
-\pagestyle{fancy}
 \tableofcontents
 
 \pagebreak
+\phantom{}
+\pagebreak
+
 \newgeometry{top=3cm, bottom=3cm, outer=6.5cm, inner=3cm, left=3cm,
 marginparwidth=4.7cm, marginparsep=0.7cm}
+\pagestyle{fancy}
 
 \section*{Uvod}
 
@@ -256,9 +267,387 @@ Ono čime se ovdje može dodatno obogatiti projekt su:
 
 
 \pagebreak
-\section{Kreiranje i kretanje (teleportacija) glavnog lika}
-\index{Vektor gledanja}
-\index{Teleportacija}
+\section{Kreiranje i kretanje glavnog lika}
+\index{kretanje} \index{teleportacija}
+
+Unreal engine ima \textit{preset} za svaku popularnu vrstu video igre pa se
+tako populariziranjem VR igri razvio i VR \textit{preset}. U tom
+\textit{presetu} već je implementirana funkcionalnost kretanja, odnosno
+teleportacije, no i dalje je važno razumjeti na koji način kretanje funkcionira
+kako bi smo mogli lakše implementirati ostale funkcionalnosti u skladu s onime
+što već imamo.
+
+Kretanje je implementirano u dva odvojena objekta koji međusobno komuniciraju.
+Jedan objekt je kamera kroz koji igrač prati svijet, dok je drugi objekt
+kontroler, odnosno kontroleri na kojima se nalazi tipka za kretanje.
+
+Ta su dva objekta povezana zato što se pomoću vektora kontrolera i kolizije
+određuje mjesto na koje će se postaviti igrač nakon uspješne teleportacije.
+Kretanje, odnosno teleportacija se izvodi kroz niz petlji.
+
+\subsection{VR \textit{blueprint}}
+
+Element, odnosno \texttt{actor} iz naslova je VR uređaj u virtualnom prostoru.
+Taj \texttt{actor} prestavlja stvarni VR uređaj iz realnog svijeta virtualnom
+svijetu. U nastavku slijedi opis svih funkcionalnosti koje su postavljene
+pomoću blueprinta u navedenom actoru.
+
+\subsubsection{Postavljanje visine igrača te postavke VR uređaja}
+\index{događaj} \index{event} \index{visina} \index{postavke}
+
+Sustav događaja je sustav koji omogućuje programerima da se neka funkcija
+pokrene nakon što se nešto dogodi.
+
+Sve što će se sada opisati okida se na događaj početka igre. Događaja  u Unreal
+engineu ima mnogo. Za sada će se koristiti događaji početak igre, \textit{tick}
+ili \textit{input} od strane igrača.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[]{slike/01.png}
+	\caption{Događaj za početak igre}
+\end{figure}
+
+\index{PSVR}
+Prvi skup čvorova koji slijedi nakon čvora početka igre služi za prilagodbu
+visine igrača ukoliko se radi o PSVR \marginpar{\color{teal}{\small Play Station
+Virtual Reality}} uređaju jer
+PSVR ne zna gdje se nalazi pod te može sam odrediti visinu na kojoj se nalazi
+igrač. Praćenje (eng. \textit{tracking}) \textit{headseta} i kontrolera se na
+VR uređajima vrši pomoću namjanje dviju kamera koje onda mogu
+uspoređivati dvije iste scene iz različitog kuta gledanja te na taj način
+dobiti informacije o trodimenzionalnosti prostora kojeg pokrivaju.
+
+Ovisno o
+uređaju određuje se ime uređaja koji se kasnije koristi za indentifikaciju
+scenskog elementa kojem je taj uređaj pridružen. Drugim riječima, stvarni
+uređaj se veže s virtualnim te oni postaju isti element. Na taj način
+pokretanjem glave koje mijenjaju lokaciju fizičkog uređaja
+izazivaju i mijenjanje lokacije u virtualnom prostoru. Sljedeći čvor prikazuje
+implementaciju opisanog.
+
+\marginpar{\color{teal}{\small PSVR uređaj ima samo jednu kameru koja prati
+intezivne izvore svjetlosti na PSVR uređaju te po tome može znati samo
+trodimenzionanu rotaciju uređaja i nema prostornu osvještenost o poziciji samog
+uređaja u odnosu na bilo koji drugi element u prostoru.}}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{slike/02.png}
+	\caption{Čvor koji prati pokrete glave i sinkronizira pokrete s igrom}
+\end{figure}
+
+\subsubsection{Stvaranje i vezanje kontrolera za VR uređaj}
+
+\index{PSVR}
+\index{Samsung Gear VR}
+\index{Google Cardboard}
+\index{HTC Vive}
+\index{Oculus Rift}
+\index{Valve Index}
+Kontroleri (ruke) nalaze se kao odvojeni \textit{actor} u Unreal Engineu kao
+i u drugim \textit{game engineima} jer se kreće od pretpostavke da u projektu
+može biti i samo HMD \marginpar{\color{teal}{\small HMD -- Head Mounted
+Display}} \index{HMD} \index{Head Mounted Display} uređaj što obično i smatramo VR uređajem bez svojih
+kontrolera. To su uređaji poput Samsung Gear VR, Google Cardboarda, spomenuti
+PSVR itd. Ukoliko uređaj ima svoje kontrolere, a najpopularniji VR uređaji
+poput HTC Vive, Oculus Rift S i Quest te Valve Index imaju kontrolere, onda je
+te kontrolere potrebno spojiti s uređajem na način da im objekt uređaja bude
+vlasnik. U nastavku se može vidjeti da se nakon početka igre stvaraju dvije
+instance kontrolera koje odgovraju lijevoj i desnoj ruci.
+
+Kod oba kontrolera
+vlasnik je \texttt{Self} sto je referenca na \textit{blueprint} u kojem se trenutno izrađuju
+čvorovi. Prisjetimo se da je to \textit{blueprint} od
+\texttt{MotionControllerPawn}a,  odnosno
+\textit{blueprint} od samog VR uređaja te ovdje sa \texttt{Self} označavamo upravo njega.
+Postavljaju se vrijednosti unutar objekata \texttt{Left Controller} i \texttt{Right
+Controller} te im se pridružuje roditeljska klasu koja je zapravo sam VR
+uređaj. Stvaranje ruku u VR okruženju odvija se bez obzira na kolizije koje se
+mogu dogoditi jer uvijek želimo da se ruke stvore iz tog razloga što su ruke na
+neki način tipkovnica i miš VR uređaja uz njega samog.
+\index{Controller}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{slike/03.png}
+	\caption{Pripasivanje kontrolera i HMD-a objektima}
+\end{figure}
+
+\subsubsection{Proces teleportacije}
+\index{teleportacija}
+
+Teleportacija je najkompleksniji element ove igre pa se neće moći jednostavno
+prikazati i objasniti u jednom skupu čvorova. Krenut ćemo od elementa kojeg je
+najjednostavnije razumjeti jer sadrži funkciju za teleportaciju. Izvršavanje
+teleportacije događa se nakon provjere određenih sigurnosnih i praktičnih
+uvjeta. Važno je imati u vidu
+da se izvršavanje ovog dijela funkcionalnosti ne izvršava „odmah“ nakon
+korisnikovog zahtjeva za teleportacijom (po pritisku tipke),
+već je ovo normalan slijed operacija nakon uspješnih provjera. \textit{Odmah} je
+napisano pod navodnicima jer se korisniku čini da je u tom trenutku, ali
+zapravo se cijeli niz događaja odradi prije teleportacije.
+
+U samoj funckionalnosti teleportacije postoje još dvije provjere:
+\begin{itemize}
+	\item nalazi li se već igrač u procesu teleportacije kada traži
+		teleportaciju
+	\item je li mjesto na koje se želi teleportirati valjano
+\end{itemize}
+
+Ukoliko su zadovoljena prethodna dva uvjeta zabranjuje
+se prolaz novih zahtjeva za teleportaciju tako da se proces teleportacije
+postavlja na vrijednost \texttt{True}. Kad je prvi uvjet zadovoljen
+(\texttt{False} ovom slučaju) a drugi nije, briše se vizualna reprezentacija
+teleportacije.
+
+\index{fade out}
+\index{mrak na oči}
+Zadovoljavanje oba uvjeta pokreće funkciju koja započinje zatamnjenje (eng.
+\textit{fade out}) \marginpar{\color{teal}{fade out -- padanje mraka na oči}} ekrana an VR uređaju. Zatamnjenje traje isto onoliko vremena
+koliko traje i funkcija odgode vremena tako da se teleportacija dogodi točno
+nakon potpunog zatamnjenja ekrana.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{slike/04.png}
+	\caption{Prikaz procesa teleportacije}
+\end{figure}
+
+Valjano mjesto za teleportaciju ili kretanje je mjesto kojeg objekt slobodnog
+kretanja označava kao slobodnog za kretanje, a mjesto na kojeg se igrač
+teleportira prikazano je indikatorom mjesta teleportacije (v. sliku \ref{tele1}). Svaki \textit{pawn}
+\marginpar{\color{teal}{\small pawn -- fizička realizacija igrača u svijetu}}
+može imati svoj objekt slobodnog kretanja.
+\index{pawn}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{slike/tele1.png}
+	\includegraphics[width=1\textwidth]{slike/tele2.png}
+	\caption{Indikator mjesta teleportacije}
+	\label{tele1}
+\end{figure}
+
+Objekt zabrane kretanja su nevidljivi zidovi u videoigrama dok \textit{actor}
+može biti (vidljiv) zid kroz kojeg se ne može kretati.
+\index{actor}
+\index{nevidljiv zid}
+
+\index{fade in}
+Nakon teleportacije započinje proces vraćanja crnog ekrana u normalan pogled
+(eng. \textit{fade in}) VR uređaja. Teleportacija može bez problema raditi i bez
+korištenja zatamnjenja u ove dvije spomenute funkcije i ne čini nikakvu razliku
+u funkcionalnsti teleportiranja, ali poboljšava korisničko iskustvo. Obična
+teleportacija bez korištenja zatamnjenja ekrana djeluje neprikladno, odnosno
+igraču se može činiti kao da dolazi do grešaka. Zatamnjenje ovdje teleportaciju
+čini prirodnijom koliko god se proces teleportiranja može nazvati prirodnim.
+
+\index{indikator mjesta teleportacije}
+U međuvremenu se briše vizualna reprezentacija indikatora
+mjesta teleportacije i sve završava postavljanjem procesa teleportacije na
+\texttt{False}. Takva zaokruženost funkcionalnosti ispitivanjem istinitosti
+varijable zapravo čini jedan semafor koji ne dopušta novo izvršavanje
+funkcionalnosti dok prethodno izvršavanje nije došlo do kraja. Funkcija
+teleportacije lokaciju i rotaciju teleportacije dobiva od funkcije za dobivanje
+željenog mjesta za teleportaciju koja se može vidjeti na prethodnoj slici.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/05.png}
+	\caption{Prikaz završetka teleportacije}
+\end{figure}
+
+\subsubsection{Rukovanje kontrolerima}
+
+\index{kontroler}
+\index{rukovanje kontrolerom}
+Sljedeće funkcionalnosti okidaju se na igračev unos preko
+kontrolera. Početni događaj koji to okida može se vidjeti prikazan crvenom
+bojom na slici \ref{s06}. Element na kojeg utječemo je objekt kojeg smo
+definirali kod spajanja kontrolera s VR uređajem. Pošto je svaki kontroler
+odvojeni objekt moramo definirati što se događa i za jedan i za drugi kontroler
+pritiskom na odgovarajuću tipku. Ako i na jednom i na drugom kontroleru želimo
+implementirati funkcionalnost teleportacije to znači da je kod ili u ovom
+slučaju skup čvorova isti osim što se referenciramo na različiti kontroler.
+Zbog tog razloga će se u nastavku opisati slučaj za samo jedan kontroler jer je
+implementacija za drugi kontroler manje više ista.
+\index{teleportacija}
+
+Na pritisak tipke kontrolera izvršava se
+funkcija za aktivaciju teleportacije, a to je funkcija koja stvara vizualnu
+reprezentaciju za mjesto teleportacije na kontroleru na kojem je pritisnuta
+tipka. Nakon toga se onemogućava vizualna reprezentacija za mjesto
+teleportacije na drugom kontroleru. Tako je napravljeno kako igrač ne bi mogao
+izazvati grešku na način da pritisne tipku na jednom kontroleru i dok je drži
+pritisnutu, pritišće tipku i na drugom kontroleru. Na ovaj način to se izbjegne
+jer aktivacija na jednom kontroleru automatski znači deaktivaciju na drugom
+kontroleru.
+
+Na otpuštanje pritiska tipke provjerava se je li postavljen uvjet iz
+funkcije aktivacije vizualne reprezentacije teleportacije. Ukoliko je, odlazi se
+u funkciju teleportacije koju smo već opisali. Na slikama se usporedbom može
+vidjeti kako se u obje slike radi o istoj funkcionalnosti te je jedina razlika
+u objektu kontrolera za kojeg želimo aktivirati vizualnu reprezentaciju mjesta
+teleportacije i objektu kontrolera za kojeg želimo deaktivirati vizualnu
+reprezentaciju mjesta teleportacije.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/06.png}
+	\includegraphics[width=\textwidth]{slike/07.png}
+	\caption{Prikaz upravljanja kontrolerima, redom lijevi pa desni}
+	\label{s06}
+\end{figure}
+
+\subsubsection{Postavljanje rotacije mjesta teleportacije}
+\index{rotacija mjesta teleportacije}
+
+Funkcionalnost koja slijedi izazvana je događajem \textit{tick} koji se konstanto
+pojavljuje dok je igra pokrenuta. To je jedan od spomenutih događaja okidača
+koji je također označen crvenom bojom u \textit{blueprintovima}. Iste
+funkcionalnosti vrijede i za lijevi i za desni kontroler tako da se analogijom
+mogu poopćiti.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[]{slike/08.png}
+	\caption{Slika događaja \textit{tick}}
+\end{figure}
+
+\index{gljivice}
+Na objektu odabranog kontrolera ispituje se aktiviranost vizulane
+reprezentacije mjesta teleportacije te ako je aktivna, postavlja se varijabla
+rotacije teleportacije preko $x$ i $y$ osi na gljivici na očitanu vrijednost.
+Prisjetimo se da se do ovog dijela funkcionalnosti dolazi svakim \textit{tickom} što
+znači da se mogućnost promjene rotacije teleportacije događa konstantno odnosno
+dokle god je valjan uvjet ulaska u petlju, a to je da je aktivirana vizualna
+reprezentacija mjesta teleportacije. Isti slučaj je i kod drugog kontrolera pa
+to nećemo posebno objašnjavati osim možda napomenuti očito --
+razlikuje se objekt nad kojim se vrši funkcionalnost.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/09.png}
+	\includegraphics[width=\textwidth]{slike/10.png}
+	\caption{Prikaz rotacije nakon teleportacije}
+\end{figure}
+
+\subsection{Kontroler \textit{blueprint}}
+
+Sada prelazimo na dio koda koje se nalazi u \textit{blueprintu} od kontrolera. Prvo ćemo
+krenuti od dobivanja lokacije i rotacije za mjesto teleportacije. Zbog
+VR uređaja koji nemaju lokacijsku osviještenost neki su detalji malo složeniji.
+\index{lokacijska osviještenost kontrolera}
+
+\subsubsection{Dobivanje lokacije i rotacije za mjesto teleportacije}
+
+\index{gljivice}
+\index{PSVR}
+Ova funkcionalnost za VR uređaje je veoma jednostavna jer se iz lokacije mjesta
+teleportacije dobiva vektor lokacije te se iz postavljene rotacije preko
+gljivice postavlja rotacija. Međutim, zbog kompatibilnosti sa uređajima poput
+PSVR prolazi se kroz još nekoliko koraka. Uzima se trenunta pozicija VR uređaja
+te se od toga uzimaju samo $x$ i $y$ vrijednosti. Zatim se taj vektor rotira prema
+rotaciji gljivice te se dobiveni vektor oduzima od vektora mjesta
+teleportacije. Ovo se ponovo izvršava u svrhu prilagođavanja VR uređaju koji ne
+poznaje visinu jer je na ovakav način visina nebitna te će se postaviti na onu
+prijašnje utvrđenu udaljenost od poda kao novu visinu.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/11.png}
+	\caption{Prikaz rotacije nakon teleportacije}
+\end{figure}
+
+
+\subsubsection{Aktiviranje vizualizacije mjesta teleportacije}
+
+Poziv ove funkcije već smo koristili kod pritiska tipke kontrolera na
+\textit{blueprintu} VR uređaja. Ova funkcija postavlja istinitost varijable
+aktivacije
+vizualizacije mjesta teleportacije na \texttt{True} te postalja vidljivost strelice
+koja vizualizira lokaciju i rotaciju na vidljivo. Jednostavnost i briljantnost
+ovog skupa čvorova može se vidjeti na slici \ref{s12}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/12.png}
+	\caption{Prikaz prikaza vizualizacije mjesta teleportacije}
+	\label{s12}
+\end{figure}
+
+\index{light-house praćenje}
+Postoje i dodatne funkcionalnosti koje nisu potrebne za normalno funkcioniranje
+teleportacije na Oculus Rift S uređaju, no za neke druge uređaje je korisno. Svi
+VR uređaji koji koriste \textit{light-house} praćenje mogu se poslužiti i vidljivosti
+scenske komponente koja je prostor u kojem se igra. Ovdje to ne možemo ispitati
+pa nećemo detaljnije ni obrađivati. Još jedna dodatna funkcionalnost koja je
+pračenje rotacije kontrolera odnosno zapešća. Ova rotacija se može korisititi u
+igrama, ako želimo da igrač određuje rotaciju teleportacije preko rotacije
+kontrolera odnosno svojeg zapešća. Nekada može biti zanimljivo no više je
+umrajaće od rotacije preko gljivice zato što je neprirodno te ga mi nećemo
+koristiti. Ovdje se može vidjeti opisani dio.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/13.png}
+	\caption{Aktivacija indikatora mjesta teleportacije}
+\end{figure}
+
+
+\subsubsection{Dektiviranje vizualizacije mjesta teleportacije}
+
+\index{indikator mjesta teleportacije}
+\index{inside-out praćenje}
+\marginpar{\color{teal}{ \small Oculus Riftovi imaju tzv. \textit{inside-out}
+praćenje što znači da za praćenje fizičke pozicije kontrolera i samog VR
+uređaja nisu potrebni vanjski elementi tj.  \textit{light-house} na dva
+suprotna kraja prostora za igru. VR uređaji koji koriste \textit{inside-out}
+praćenje imaju kamere na samom VR uređaju koje preko izraženih točaka u
+stvarnom prostoru poput ruba stola, točke nagle promjene u boji tepiha i sl.
+određuju vlastite točke praćenja u stvarnom svijetu te na taj način određuju
+fizičku poziciju VR uređaja i kontrolera što se na kraju preslikava i u
+virtualno okruženje.}}
+
+\index{room-scale}
+Funcionalnosti koja uklanja vizualizaciju mjesta teleportacije je ona koja je
+također potrebna kako se vizualizacija ne bi stalno vidjela. Kako smo
+vrijednost varijable aktiviranosti vizualizacije teleportacije postavili na
+\texttt{True}, ovdje provjeravamo tu varijablu te ju postavljamo na
+\texttt{False}.  Na taj način provjeravamo je li igrač ušao u proces aktivacije
+jer se ne bi smjelo ništa isključiti ako nije uključeno.  Postavlja se
+vidljivost indikatora lokacije i rotacije na nevidljivo isto kao i vidljivost
+kraja luka za teleportaciju. Na kraju se postavlja vidljivost za \textit{room
+scale} element koji ponovo nemamo kod našeg VR uređaja, no zbog kompatibilnosti
+ćemo ga samo spomenuti.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/14.png}
+	\caption{Deaktivacija vizualnog indikatora mjesta teleportacije}
+\end{figure}
+
+
+\subsection{Zaključak}
+
+Kroz ovu lekciju pokazali smo kako funkcioniraju osnovne funkcionalnosti
+kretanja u prostoru pomoću VR uređaja te kontrolera. Ove pretpostavljene
+funkcionalnosti napravljene su tako da većina VR uređaja radi na
+\textit{plug'n'play} način te tako da se ne moraju stalno iznova programirati
+osnovne stvari.
+
+Kao dopunu ove lekcije korisno bi bilo i istražiti koncepte:
+\index{light-house praćenje}
+\index{rotacija zapešća}
+\begin{itemize}
+	\item \textit{light-house} praćenje i \textit{inside-out} praćenje
+	\item \textit{room-scale}
+	\item praćenje rotacije zapešća za smjer teleportacije umjesto gljivice
+		-- ponekad neprirodno, ali korisno za istražiti
+\end{itemize}
+\paragraph{Prostor za bilješke:}\phantom{}
+
 
 \pagebreak
 \section{Detekcija pokreta kontrolera}

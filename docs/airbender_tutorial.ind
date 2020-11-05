@@ -1,18 +1,92 @@
 \begin{theindex}
 
-  \item mehanike, \hyperpage{4}
+  \item actor, \hyperpage{12}
 
   \indexspace
 
-  \item Teleportacija, \hyperpage{7}
+  \item Controller, \hyperpage{10}
 
   \indexspace
 
-  \item Uvod, \hyperpage{3}
+  \item događaj, \hyperpage{9}
 
   \indexspace
 
-  \item Vektor gledanja, \hyperpage{7}
-  \item VR, \hyperpage{5}
+  \item event, \hyperpage{9}
+
+  \indexspace
+
+  \item fade in, \hyperpage{12}
+  \item fade out, \hyperpage{11}
+
+  \indexspace
+
+  \item gljivice, \hyperpage{14, 15}
+  \item Google Cardboard, \hyperpage{10}
+
+  \indexspace
+
+  \item Head Mounted Display, \hyperpage{10}
+  \item HMD, \hyperpage{10}
+  \item HTC Vive, \hyperpage{10}
+
+  \indexspace
+
+  \item indikator mjesta teleportacije, \hyperpage{13}, \hyperpage{17}
+  \item inside-out praćenje, \hyperpage{17}
+
+  \indexspace
+
+  \item kontroler, \hyperpage{13}
+  \item kretanje, \hyperpage{9}
+
+  \indexspace
+
+  \item light-house praćenje, \hyperpage{16, 17}
+  \item lokacijska osviještenost kontrolera, \hyperpage{15}
+
+  \indexspace
+
+  \item mehanike, \hyperpage{6}
+  \item mrak na oči, \hyperpage{11}
+
+  \indexspace
+
+  \item nevidljiv zid, \hyperpage{12}
+
+  \indexspace
+
+  \item Oculus Rift, \hyperpage{10}
+
+  \indexspace
+
+  \item pawn, \hyperpage{11}
+  \item postavke, \hyperpage{9}
+  \item PSVR, \hyperpage{9, 10}, \hyperpage{15}
+
+  \indexspace
+
+  \item room-scale, \hyperpage{17}
+  \item rotacija mjesta teleportacije, \hyperpage{14}
+  \item rotacija zapešća, \hyperpage{17}
+  \item rukovanje kontrolerom, \hyperpage{13}
+
+  \indexspace
+
+  \item Samsung Gear VR, \hyperpage{10}
+
+  \indexspace
+
+  \item teleportacija, \hyperpage{9}, \hyperpage{11}, \hyperpage{13}
+
+  \indexspace
+
+  \item Uvod, \hyperpage{5}
+
+  \indexspace
+
+  \item Valve Index, \hyperpage{10}
+  \item visina, \hyperpage{9}
+  \item VR, \hyperpage{7}
 
 \end{theindex}
