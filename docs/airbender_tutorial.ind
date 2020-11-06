@@ -1,83 +1,87 @@
 \begin{theindex}
 
-  \item actor, \hyperpage{12}
+  \item actor, \hyperpage{9}, \hyperpage{15}
 
   \indexspace
 
-  \item Controller, \hyperpage{10}
+  \item content browser, \hyperpage{9}
+  \item Controller, \hyperpage{13}
 
   \indexspace
 
-  \item događaj, \hyperpage{9}
+  \item događaj, \hyperpage{12}
 
   \indexspace
 
-  \item event, \hyperpage{9}
+  \item event, \hyperpage{12}
 
   \indexspace
 
-  \item fade in, \hyperpage{12}
-  \item fade out, \hyperpage{11}
+  \item fade in, \hyperpage{15}
+  \item fade out, \hyperpage{14}
 
   \indexspace
 
-  \item gljivice, \hyperpage{14, 15}
-  \item Google Cardboard, \hyperpage{10}
+  \item git, \hyperpage{10}
+  \item gljivice, \hyperpage{17, 18}
+  \item Google Cardboard, \hyperpage{13}
 
   \indexspace
 
-  \item Head Mounted Display, \hyperpage{10}
-  \item HMD, \hyperpage{10}
-  \item HTC Vive, \hyperpage{10}
+  \item Head Mounted Display, \hyperpage{13}
+  \item HMD, \hyperpage{13}
+  \item HTC Vive, \hyperpage{13}
 
   \indexspace
 
-  \item indikator mjesta teleportacije, \hyperpage{13}, \hyperpage{17}
-  \item inside-out praćenje, \hyperpage{17}
+  \item indikator mjesta teleportacije, \hyperpage{16}, \hyperpage{20}
+  \item inside-out praćenje, \hyperpage{20}
+  \item instalacija, \hyperpage{8}
 
   \indexspace
 
-  \item kontroler, \hyperpage{13}
-  \item kretanje, \hyperpage{9}
+  \item kontroler, \hyperpage{16}
+  \item kretanje, \hyperpage{12}
 
   \indexspace
 
-  \item light-house praćenje, \hyperpage{16, 17}
-  \item lokacijska osviještenost kontrolera, \hyperpage{15}
+  \item light-house praćenje, \hyperpage{19, 20}
+  \item lokacijska osviještenost kontrolera, \hyperpage{18}
 
   \indexspace
 
   \item mehanike, \hyperpage{6}
-  \item mrak na oči, \hyperpage{11}
+  \item mrak na oči, \hyperpage{14}
 
   \indexspace
 
-  \item nevidljiv zid, \hyperpage{12}
+  \item nevidljiv zid, \hyperpage{15}
 
   \indexspace
 
-  \item Oculus Rift, \hyperpage{10}
+  \item Oculus Rift, \hyperpage{13}
 
   \indexspace
 
-  \item pawn, \hyperpage{11}
-  \item postavke, \hyperpage{9}
-  \item PSVR, \hyperpage{9, 10}, \hyperpage{15}
+  \item pawn, \hyperpage{14}
+  \item place actors, \hyperpage{8}
+  \item postavke, \hyperpage{12}
+  \item PSVR, \hyperpage{12, 13}, \hyperpage{18}
 
   \indexspace
 
-  \item room-scale, \hyperpage{17}
-  \item rotacija mjesta teleportacije, \hyperpage{14}
-  \item rotacija zapešća, \hyperpage{17}
-  \item rukovanje kontrolerom, \hyperpage{13}
+  \item room-scale, \hyperpage{20}
+  \item rotacija mjesta teleportacije, \hyperpage{17}
+  \item rotacija zapešća, \hyperpage{20}
+  \item rukovanje kontrolerom, \hyperpage{16}
 
   \indexspace
 
-  \item Samsung Gear VR, \hyperpage{10}
+  \item Samsung Gear VR, \hyperpage{13}
 
   \indexspace
 
-  \item teleportacija, \hyperpage{9}, \hyperpage{11}, \hyperpage{13}
+  \item teleportacija, \hyperpage{12}, \hyperpage{14}, \hyperpage{16}
 
   \indexspace
 
@@ -85,8 +89,13 @@
 
   \indexspace
 
-  \item Valve Index, \hyperpage{10}
-  \item visina, \hyperpage{9}
+  \item Valve Index, \hyperpage{13}
+  \item viewport, \hyperpage{8}
+  \item visina, \hyperpage{12}
   \item VR, \hyperpage{7}
+
+  \indexspace
+
+  \item world outliner, \hyperpage{9}
 
 \end{theindex}

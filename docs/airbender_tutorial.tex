@@ -229,15 +229,36 @@ Pomoću kontrolera moguće je pratiti pokrete ruku. U nekim igrama to je već
 iskorišteno za precizno bacanje projektila, predmeta, uzimanje predmeta itd., a
 u našem projektu to će biti glavni okidači za usmjereno bacanje moći.
 
-\subsection{Unreal Engine}
+\subsection{Instalacija i korištenje okruženja}
+
+Razvojno okruženje sastoji se od Oculus softvera i Unreal engine editora.
+Oculus sofrver služi kao \textit{driver} za Oculus \textit{headset}.
+
+Postavljanje okruženja odvija se u sljedećim koracima:
+
+\index{instalacija}
+\begin{enumerate}
+	\item Instalacija Oculus softvera
+	\item Instalacija Unreal engine-a
+	\item Pokretanje ugrađenog projekta
+	\item Uklanjanje eventualnih problema
+	\item Postavljanje verzionioranja na projekt
+\end{enumerate}
+\subsubsection{Instalacija Oculus softvera}
+
+Za početak je potrebno  doći do Oculusove stranice
+za preuzimanje softvera (\url{oculus.com/setup/}) i preuzeti
+softver za uređaj na kojem razvijamo. U našem slučaju razvijamo na Oculus Rift
+S i preuzimamo taj software.
+
+\subsubsection{Instalacija Unreal Enginea}
 
 Kako bi se instalirao Unreal Engine, potrebno je otići na mrežnu stranicu
 stranicu \url{unrealengine.com}. U gornjem desnom kutu su opcije \texttt{Sign
 in} te \texttt{Download}. Prijava je potrebna za pokretanje Unreal Enginea tako
 da se korisnik mora registrirati prije ili kasnije.
 
-\marginpar{\color{teal}{\small Instalacija za Linux ponešto je složenija te je potrebno
-kompajlirati cijeli projekt. To uzima poprilično vremena i resursa, a sadrži i
+\marginpar{\color{teal}{\small Instalacija za Linux ponešto je složenija te je potrebno kompajlirati cijeli projekt. To uzima poprilično vremena i resursa, a sadrži i
 nešto više koraka koji se ovdje neće opisati jer se orijentiramo na Windows
 operacijske sustave}}
 
@@ -250,19 +271,119 @@ ako se koristi za projekt koji još ne stvara profit.
 Dalje je potrebno registrirati se te slijediti uputstva kod instalacije. Unreal
 Engine radi na operacijskim sustavima Linux te Windows.
 
+\subsubsection{Korištenje Unreal enginea}
+
+Dijelovi editora koji se nakon otvaranja projekta vide su:
+\textit{Place Actors}, \textit{Toolbar}, \textit{Viewport},
+\textit{Content Browser}, \textit{World}
+\textit{Outliner} te \textit{Details panel}.
+
+\index{place actors}
+U \textit{Place Actors} dijelu se nalaze actori koji se mogu postaviti u
+\textit{Viewport} jednostavnim \textit{drag'n'dropom}. Nakon kreiranja svakog
+projekta u \textit{Place Actors} mogu se pronaći zadani actori koji se nalaze u
+svakom projektu.
+
+\index{viewport}
+Najveći dio editora zauzima \textit{Viewport}. U \textit{Viewportu} se nalazi trenutna otvorena
+razina. Svi elementi koji se u njoj nalaze mogu se označiti klikom miša. Označeni
+element može se ili pomicati po sve tri osi ili se može promijeniti opcija te
+se na taj način rotirati po svim trima osima.
+
+\index{content browser}
+\textit{Content browser} služi za navigaciju korisnika po raznim mapama i
+dokumentima.  Iz njega se može pristupiti svim dokumentima koji se koriste u
+projektu te se mogu postaviti u \textit{Viewport}.
+
+\index{world outliner}
+\textit{World Outliner} je jednostavan element editora koji se nalazi u gornjem
+desnom kutu. U njemu se mogu pronaći svi \textit{actori} koji su postavljeni u
+trenutno izabranom levelu. Ukoliko se odabere neki actor iz \textit{World
+Outlinera}, on će automatski biti odabran i u \textit{Viewportu}.
+
+\index{actor}
+Svaki \textit{actor} koji se nalazi u \textit{Viewportu} i \textit{World
+Outlineru} ima svoj \textit{Details panel. }U ovom panelu se mogu se provjeriti
+i mijenjati razni podaci poput lokacije actora, rotacije, veličine. Također,
+mogu se mijenjati i korištene teksture odnostno materijali, opcije kolizije
+itd.
+
 \subsection{Kreiranje projekta}
 
-\subsection{Zaključak i otvorena pitanja}
+Kako bi testirali radi li cijelo okruženje ispravno učitati ćemo VR preset koji
+je ugrađen u Unreal Engine. Važno je da je prije pokretanja Unreal Enginea
+Oculus softver već upaljen. Pokrećemo program pritiskom na tipku "Launch" u
+gornjem desnom kutu.
 
-Ovo je bio uvod i treba nas pripremiti za sve ono što dolazi u idućoj lekciji,
-a to je postavljanje prvih objekata u svijet.
+\marginpar{\color{teal}{\small Stvaranje prvog projekta moglo bi
+potrajati znatno duže nego inače jer se mnogi resursi sad generiraju.
+Dulje učitavanje može se očekivati i nakon ažuriranja na noviju verziju.}}
 
-Ono čime se ovdje može dodatno obogatiti projekt su:
+Za stvaranje projekta odabiremo opciju "Games" što će nas odvesti na izbornik
+već izrađenih projekata koji sadrže minimalno što je potrebno kako bi se
+testirale ili izrađivale dodatne mehanike.
+
+Odabiremo "Virtual Reality" \textit{preset} u kojemu je već implementirano
+kretanje, kontroleri, VR kamere, primanje objekata i kolizije. Pritiskom na
+tipku "Create Project" projekt se stvara.
+
+Kad se otvori projekt moramo odabrati kartu koja je napravljena za naš tip
+uređaja za virtualnu stvarnost. Odabiremo desni preset i kartu pronalazimo u
+\textit{content browseru} na dnu ekrana.
+
+Navigiramo na lokaciju \texttt{VirtualRealityBP/Maps/MotionControllerMap} i dvostrukim klikom otvaramo tu kartu.
+Po otvaranju karte u gornjoj alatnoj traci odabiremo padajući izbornik pored
+tipke \textit{play}
+i odabiremo \textit{VR preview}.
+
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{slike/R_slika7.1.png}
+	\caption{Prikaz izbornika kojim se dolazi do opcije \textit{VR preview}}
+\end{figure}
+
+Ako je sve ispravno postavljeno, na uređaju bi se trebao prikazati VR pogled.
+
+
+
+Actor je jedna od najkorištenijih klasa u Unreal Engineu. Elementi te klase su
+oni koji se mogu postaviti u level. Za actore se mogu odrediti razne postavke,
+primjerice kojeg će biti materijala, imaju li koliziju itd.
+
+Klasa Pawn je podklasa Actora te ona predstavlja sve ono što korisnik može
+kontrolirati. Klasa Pawn ima i svoju podklasu Character koja ima određena
+svojsta koje klasa Pawn nema. Postoje još mnoge klase u UE-u međutim one nisu
+toliko razvijene i korištene kao ova klasa.
+
+
+U Unreal Engineu se programira prvenstveno korištenjem \textit{Blueprinta} metodom poznatom pod nazivom
+\textit{Visual Scripting}. To znači da se većina koda napiše pomoću
+\textit{Blueprinta} dok se
+određene stvari mogu napisati i u \texttt{C++}-u. Teoretski je moguće napisati igru i u
+\texttt{C++}-u, ali to se u pravilu ne radi jer je Unreal engine napravljen
+tako da se dizajn igre odvaja od programiranja dijelova klasa pa se glavne
+funkcionalnosti uglavnom \textit{blueprintaju}, a detalji se programiraju.
+
+\subsection{Zaključak}
+
+U ovom uvodu instalirali smo okruženje te se upoznali s glavnim elementima
+razvijanja igara. Upoznali smo se i s pojedinostima programiranja u Unreal
+Engineu te smo kontekstualizirali programiranje.
+
+Mnogi koncepti koji vrijede u programiranju poslovnih aplikacija vrijede i u
+Unrealu, kao što je verzioniranje, jedino treba posebno pripaziti na velike
+datoteke i na \texttt{.gitignore}. \index{git}
+
+Teme i koncepti kojima se može dodatno obogatiti projekt su:
 \begin{itemize}
-	\item otvori prostor za dodatna poboljšanja prvi primjer
-	\item prijedlog drugog poboljšanja
-	\item za učinak koji želimo treći primjer
+	\item verzioniranje (\texttt{git}, \texttt{LFS}...)
+	\item integracija \texttt{C++} koda u \textit{blueprinte}
+	\item detaljnije upoznavanje s elementima korisničkog sučelja u
+		okruženju
 \end{itemize}
+
+\paragraph{Prostor za bilješke:}\phantom{}
 
 
 
@@ -310,7 +431,7 @@ ili \textit{input} od strane igrača.
 
 \index{PSVR}
 Prvi skup čvorova koji slijedi nakon čvora početka igre služi za prilagodbu
-visine igrača ukoliko se radi o PSVR \marginpar{\color{teal}{\small Play Station
+visine igrača ukoliko se radi o PSVR \marginpar{\color{teal}{\small PSVR -- Play Station
 Virtual Reality}} uređaju jer
 PSVR ne zna gdje se nalazi pod te može sam odrediti visinu na kojoj se nalazi
 igrač. Praćenje (eng. \textit{tracking}) \textit{headseta} i kontrolera se na
@@ -403,10 +524,11 @@ teleportacije.
 
 \index{fade out}
 \index{mrak na oči}
-Zadovoljavanje oba uvjeta pokreće funkciju koja započinje zatamnjenje (eng.
-\textit{fade out}) \marginpar{\color{teal}{fade out -- padanje mraka na oči}} ekrana an VR uređaju. Zatamnjenje traje isto onoliko vremena
-koliko traje i funkcija odgode vremena tako da se teleportacija dogodi točno
-nakon potpunog zatamnjenja ekrana.
+Zadovoljavanje \marginpar{\color{teal}{fade out -- padanje mraka na oči}}oba
+uvjeta pokreće funkciju koja započinje zatamnjenje (eng.  \textit{fade out})
+ekrana an VR uređaju. Zatamnjenje traje isto onoliko vremena koliko traje i
+funkcija odgode vremena tako da se teleportacija dogodi točno nakon potpunog
+zatamnjenja ekrana.
 
 \begin{figure}[!h]
 	\centering
@@ -414,11 +536,13 @@ nakon potpunog zatamnjenja ekrana.
 	\caption{Prikaz procesa teleportacije}
 \end{figure}
 
+
 Valjano mjesto za teleportaciju ili kretanje je mjesto kojeg objekt slobodnog
+\marginpar{\color{teal}{\small pawn -- realizacija igrača u virtualnom svijetu
+(ne nužno u obliku čovjeka)}}
 kretanja označava kao slobodnog za kretanje, a mjesto na kojeg se igrač
-teleportira prikazano je indikatorom mjesta teleportacije (v. sliku \ref{tele1}). Svaki \textit{pawn}
-\marginpar{\color{teal}{\small pawn -- fizička realizacija igrača u svijetu}}
-može imati svoj objekt slobodnog kretanja.
+teleportira prikazano je indikatorom mjesta teleportacije (v. sliku
+\ref{tele1}). Svaki \textit{pawn}  može imati svoj objekt slobodnog kretanja.
 \index{pawn}
 
 \begin{figure}[!h]
