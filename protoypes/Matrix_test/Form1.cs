@@ -90,7 +90,7 @@ namespace Matrix_test
             {
                 panel.time = 1;
                 panel.BackColor = Color.Black;
-                templates.AddFirst(panel);
+                templates.AddLast(panel);
 
             } else if(e.Button == MouseButtons.Right)
             {
@@ -129,27 +129,35 @@ namespace Matrix_test
 
         private void betterCheck()
         {
-            while(time - inputList.Last.Value.time >= 2)
+            while(time - inputList.Last.Value.time >= 7)
             {
                 inputList.Last.Value.time = 0;
                 inputList.Last.Value.BackColor = Color.White;
                 inputList.RemoveLast();
             }
-            int counter = 0;
-            foreach (var input in inputList)
+            if (templates.Count > 0)
             {
-                foreach (var template in template)
+                int counter = 0;
+                foreach (var input in inputList)
                 {
-                    if (input.X == template.X && input.Y == template.Y)
+                    foreach (var tmpl in templates)
                     {
-                        counter++;
+                        if (input.X == tmpl.X && input.Y == tmpl.Y)
+                        {
+                            counter++;
+                        }
                     }
                 }
+                if ((double)counter / (double)templates.Count >= 0.5)
+                {
+                    Cast.BackColor = Color.Green;
+                }
+                else
+                {
+                    Cast.BackColor = Color.Yellow;
+                }
             }
-            if(counter / template.Length > 50)
-            {
-                Cast.BackColor = Color.Green;
-            }
+            
         }
 
         private void loadTest()
@@ -181,6 +189,12 @@ namespace Matrix_test
             }
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            foreach (Box item in templates)
+            {
+                input[item.X, item.Y].BackColor = Color.Azure;
+            }
+        }
     }
 }
