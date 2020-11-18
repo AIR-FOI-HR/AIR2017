@@ -108,11 +108,12 @@ namespace Matrix_test
         private void Form1_MouseLeave(object sender, EventArgs e)
         {
             //badCheck();
-            betterCheck();
+            
         }
 
         private void Form1_MouseEnter(object sender, EventArgs e)
         {
+            
             Box panel = (Box)sender;
             if(true)
             {
@@ -123,18 +124,28 @@ namespace Matrix_test
                 label1.Text = panel.X.ToString() + ";" + panel.Y.ToString();
                 label2.Text = inputList.Count.ToString();
             }
-           
+            betterCheck();
+
         }
 
 
         private void betterCheck()
         {
-            while(time - inputList.Last.Value.time >= 7)
+            removeTimedOut();
+            bool throwAbility = matchAbility();
+            if (throwAbility)
             {
-                inputList.Last.Value.time = 0;
-                inputList.Last.Value.BackColor = Color.White;
-                inputList.RemoveLast();
+                Cast.BackColor = Color.Lime;
             }
+            else
+            {
+                Cast.BackColor = Color.Yellow;
+            }
+
+        }
+
+        private bool matchAbility()
+        {
             if (templates.Count > 0)
             {
                 int counter = 0;
@@ -150,14 +161,24 @@ namespace Matrix_test
                 }
                 if ((double)counter / (double)templates.Count >= 0.5)
                 {
-                    Cast.BackColor = Color.Green;
+                    return true;
                 }
                 else
                 {
-                    Cast.BackColor = Color.Yellow;
+                    return false;
                 }
             }
-            
+            return false;
+        }
+
+        private void removeTimedOut()
+        {
+            while (time - inputList.Last.Value.time >= 7)
+            {
+                inputList.Last.Value.time = 0;
+                inputList.Last.Value.BackColor = Color.White;
+                inputList.RemoveLast();
+            }
         }
 
         private void loadTest()
@@ -191,10 +212,7 @@ namespace Matrix_test
 
         private void button1_Click(object sender, EventArgs e)
         {
-            foreach (Box item in templates)
-            {
-                input[item.X, item.Y].BackColor = Color.Azure;
-            }
+            
         }
     }
 }
